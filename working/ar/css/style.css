@@ -24,7 +24,22 @@
 /*-------------------------------------------------------------------------------------------------------------------------------*/
 /* 01 - RESET */
 /*-------------------------------------------------------------------------------------------------------------------------------*/
-@import url(//fonts.googleapis.com/earlyaccess/droidarabickufi.css);
+/* Self-hosted Arabic Kufi webfont (replaces deprecated Google earlyaccess endpoint).
+   Files added to /ar/font/ alongside the existing Naskh kit. */
+@font-face {
+  font-family: 'Droid Arabic Kufi';
+  src: url('../font/DroidKufi-Regular.woff2') format('woff2'),
+       url('../font/DroidKufi-Regular.woff')  format('woff'),
+       url('../font/DroidKufi-Regular.ttf')   format('truetype');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Droid Arabic Kufi';
+  src: url('../font/DroidKufi-Bold.woff2') format('woff2'),
+       url('../font/DroidKufi-Bold.woff')  format('woff'),
+       url('../font/DroidKufi-Bold.ttf')   format('truetype');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
 html,
 body,
 div,
