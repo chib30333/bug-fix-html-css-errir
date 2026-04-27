@@ -1,0 +1,25 @@
+<?xml version='1.0' standalone='yes'?>
+  <FileZilla3>
+    <Servers>
+      <Server>
+        <BypassProxy>0</BypassProxy>
+        <Colour>0</Colour>
+        <Comments></Comments>
+        <DirectoryComparison>0</DirectoryComparison>
+        <EncodingType>Auto</EncodingType>
+        <Host>server265.com</Host>
+        <LocalDir></LocalDir>
+        <Logontype>2</Logontype>
+        <MaximumMultipleConnections>5</MaximumMultipleConnections>
+        <Name>check@server265 (auto generated)</Name>
+        <PasvMode>MODE_DEFAULT</PasvMode>
+        <Port>21</Port>
+        <Protocol>0</Protocol>
+        <RemoteDir></RemoteDir>
+        <SyncBrowsing>0</SyncBrowsing>
+        <TimezoneOffset>0</TimezoneOffset>
+        <Type>0</Type>
+        <User>check</User>
+      </Server>
+    </Servers>
+  </FileZilla3>
