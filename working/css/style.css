@@ -24,7 +24,37 @@
 /*-------------------------------------------------------------------------------------------------------------------------------*/
 /* 01 - RESET */
 /*-------------------------------------------------------------------------------------------------------------------------------*/
-@import url(//fonts.googleapis.com/earlyaccess/droidarabickufi.css);
+/* Self-hosted Arabic webfonts (replaces deprecated Google earlyaccess endpoint).
+   Naskh: existing _gdi kit copied into /font/ (originally shipped to /ar/font/).
+   Kufi:  newly added DroidKufi-{Regular,Bold}.{woff2,woff,ttf} in /font/.
+   Family-name override on Naskh: bundled .css declares family "DroidArabicNaskh-Regular"/"-Bold",
+   but the page uses 'Droid Arabic Naskh' — so we expose both weights under that single family. */
+@font-face {
+  font-family: 'Droid Arabic Naskh';
+  src: url('../font/DroidArabicNaskh_gdi.woff') format('woff'),
+       url('../font/DroidArabicNaskh_gdi.ttf')  format('truetype');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Droid Arabic Naskh';
+  src: url('../font/DroidArabicNaskh-Bold_gdi.woff') format('woff'),
+       url('../font/DroidArabicNaskh-Bold_gdi.ttf')  format('truetype');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Droid Arabic Kufi';
+  src: url('../font/DroidKufi-Regular.woff2') format('woff2'),
+       url('../font/DroidKufi-Regular.woff')  format('woff'),
+       url('../font/DroidKufi-Regular.ttf')   format('truetype');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Droid Arabic Kufi';
+  src: url('../font/DroidKufi-Bold.woff2') format('woff2'),
+       url('../font/DroidKufi-Bold.woff')  format('woff'),
+       url('../font/DroidKufi-Bold.ttf')   format('truetype');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
 
 html,
 body,

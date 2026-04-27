@@ -87,9 +87,12 @@ Alternative considered: switch to Noto Naskh Arabic / Noto Kufi Arabic (the mode
   - `backup/` (root): `css/`, `font/`, `index.html`.
   - `backup/ar/`: `css/`, `font/`, `index.html`.
 - `c:\natoof-fix\working\` — working copy mirroring the same shape. Edits happen here only.
-- **Remote `/font/`** — Montserrat + FontAwesome + et-line. **No Droid files.**
+- **Remote `/font/`** — Montserrat + FontAwesome + et-line. **No Droid files** on the server yet (still pending FTP upload — Step 5).
 - **Remote `/ar/font/`** — Montserrat + FontAwesome + et-line **plus a Droid Arabic Naskh webfont kit already in place**: `DroidArabicNaskh_gdi.{eot,woff,ttf,svg}` (Regular) and `DroidArabicNaskh-Bold_gdi.{eot,woff,ttf,svg}`. Sample `.css` and `.html` ship with it. Matches the kit shape in client's `info/1.png`. **No `.woff2`** in this kit.
-- **No Droid Arabic Kufi files anywhere** — must still be acquired and uploaded into both `/font/` and `/ar/font/`.
+- **Local `working/font/` and `working/ar/font/`** — fully staged with all binaries the patched CSS references:
+  - Naskh `_gdi` kit (Regular + Bold, `.eot/.woff/.ttf/.svg`) in **both** trees.
+  - Kufi kit (Regular + Bold, `.woff2/.woff/.ttf/.eot`) in **both** trees, named `DroidKufi-{Regular,Bold}.{woff2,woff,ttf,eot}`.
+- **Server still missing all Kufi files and the `_gdi` Naskh copy under `/font/`** — Step 5 will push these.
 
 ### 3.1 Family-name caveat on the existing Naskh kit
 
@@ -279,35 +282,37 @@ Legend: ✅ Completed · 🟡 In Progress · ⬜ Remaining · ⚠️ Blocker / d
 | 0.8 | Diagnosed live site in browser DevTools (`/ar/`, `/ar/contact/`) | Confirmed root cause: `@font-face` registers correctly, but every `src:` URL on `fonts.gstatic.com/ea/` 404s → fallback to `sans-serif`. See §1.1 |
 | 0.9 | Captured pre-fix Network log on `/ar/` showing 6 × `DroidKufi-*.{woff2,woff,ttf}` returning **404 / 0.0 kB** | Empirical "before" artifact for hand-off pack; concrete filenames extracted (see §1.1.1). |
 | 0.10 | Mirrored remaining server tree to local: `backup/ar/css/`, `backup/ar/font/`, plus working copies | Surfaced 4th broken `@import` at `ar/css/style.css:27`, and revealed Naskh kit already present at `/ar/font/` — see §3, §3.1, §4 |
+| 1 | Step 1 — Naskh kit | Already present at `/ar/font/`; mirrored to `working/ar/font/` | n/a |
+| 2 | Step 1 — Kufi kit | Generated via Fontsquirrel; placed `DroidKufi-{Regular,Bold}.{woff2,woff,ttf,eot}` in `working/font/` and `working/ar/font/` (8 files × 2 trees) | done |
+| 2.1 | Step 5 prep | Mirrored Naskh `_gdi` kit (Regular+Bold, all 4 formats) from `working/ar/font/` → `working/font/` so the English homepage can resolve it locally and the same files can be uploaded to `/font/` in Step 5 | done |
+| 3a | Step 2a | `working/css/style.css:27` — `@import` replaced with Naskh + Kufi `@font-face` block | done |
+| 3b | Step 2b | `working/ar/css/style.css:27` — `@import` replaced with Kufi-only `@font-face` block | done |
+| 4 | Step 3 | `working/index.html:34` dead `@import` deleted | done |
+| 5 | Step 3 | `working/ar/index.html:35` dead `@import` deleted | done |
+| 6 | Step 3 | Verified `index.html:31` → `css/style.css` and `ar/index.html:33` → `/ar/css/style.css` (both link the patched stylesheets) | done |
+| 6.1 | sanity | Verified all 16 font URLs referenced by both patched CSS files exist on disk; zero live `earlyaccess` / `gstatic.com/ea/` references remain in any working file | done |
 
 ### 🟡 In Progress
 | # | Task | Notes |
 |---|---|---|
-| — | None right now | Next action belongs to Step 1 below |
+| 7 | Step 4 — Local `file://` preview | **Awaiting your browser test.** Open `working/index.html` and `working/ar/index.html` in Chrome with DevTools → Network → Font filter + Disable cache. Goals: Arabic renders in correct typeface (Naskh on `index.html` body, Kufi on AR menu link / hero / `/ar/`), zero 404s, zero requests to `fonts.gstatic.com/ea/*` or `googleapis.com/earlyaccess/*`. Sandbox cannot drive a browser — needs your hands. |
 
 ### ⬜ Remaining
-| # | Step | Task | Est. |
-|---|---|---|---|
-| 1 | Step 1 | ~~Acquire Droid Arabic **Naskh** webfont kit~~ — **already present** at `/ar/font/` (mirrored to `working/ar/font/`); see §3 | ✅ |
-| 2 | Step 1 | Acquire Droid Arabic **Kufi** kit (Regular + Bold) → `working/font/` **and** `working/ar/font/` as `DroidKufi-{Regular,Bold}.{woff2,woff,ttf}` | 8 min |
-| 3a | Step 2a | Replace `working/css/style.css:27` `@import` with the Naskh + Kufi `@font-face` block from §5 step 2a | 8 min |
-| 3b | Step 2b | Replace `working/ar/css/style.css:27` `@import` with the Kufi-only `@font-face` block from §5 step 2b | 5 min |
-| 4 | Step 3 | Delete `working/index.html:34` dead `@import` | 1 min |
-| 5 | Step 3 | Delete `working/ar/index.html:35` dead `@import` | 1 min |
-| 6 | Step 3 | Verify `ar/index.html` includes `/ar/css/style.css` (it does — line 33) | 1 min |
-| 7 | Step 4 | Local `file://` preview — confirm Arabic renders in Naskh + Kufi, no 404s | 10 min |
-| 8 | Step 5 | FTP upload — `/font/` (Naskh `_gdi` copy + new Kufi files) and `/ar/font/` (Kufi files only) | 5 min |
-| 9 | Step 5 | FTP upload `/css/style.css` and `/ar/css/style.css` | 2 min |
-| 10 | Step 5 | FTP upload `/index.html` and `/ar/index.html` | 2 min |
-| 11 | Step 6 | Inspect `.htaccess`; add font MIME types **only if** DevTools shows wrong content-type | 5 min |
-| 12 | Step 7 | Live verify on `https://natoof.ae/`, `/ar/`, `/ar/contact/` — Network tab, Computed styles, cross-browser | 15 min |
-| 13 | Step 7 | Purge CDN/Cloudflare cache if applicable | 2 min |
-| 14 | Step 8 | Hand-off to Mariam — before/after screenshots, file list, rollback note | 5 min |
+| # | Step | Task | Est. | Blocked on |
+|---|---|---|---|---|
+| 8 | Step 5 | FTP upload — `/font/` (Naskh `_gdi` copy + new Kufi files) and `/ar/font/` (Kufi files only) | 5 min | Task 7 pass |
+| 9 | Step 5 | FTP upload `/css/style.css` and `/ar/css/style.css` | 2 min | Task 8 |
+| 10 | Step 5 | FTP upload `/index.html` and `/ar/index.html` | 2 min | Task 9 |
+| 11 | Step 6 | Inspect `.htaccess`; add font MIME types **only if** DevTools shows wrong content-type | 5 min | Task 12 evidence |
+| 12 | Step 7 | Live verify on `https://natoof.ae/`, `/ar/`, `/ar/contact/` — Network tab, Computed styles, cross-browser | 15 min | Task 10 |
+| 13 | Step 7 | Purge CDN/Cloudflare cache if applicable | 2 min | Task 12 |
+| 14 | Step 8 | Hand-off to Mariam — before/after screenshots, file list, rollback note | 5 min | Task 12 |
 
 ### ⚠️ Decisions / open questions
-- ~~**Filename convention for the kits.**~~ **Resolved (§1.1.1):** mirror Google's exact filenames — `DroidKufi-{Regular,Bold}.{woff2,woff,ttf}` and `DroidNaskh-{Regular,Bold}.{woff2,woff,ttf}`. No `-webfont` suffix, no `.eot`, no `.svg`.
+- ~~**Filename convention for the kits.**~~ **Resolved (§1.1.1):** mirror Google's exact filenames — `DroidKufi-{Regular,Bold}.{woff2,woff,ttf}` and the existing `DroidArabicNaskh{,-Bold}_gdi.*` from the on-server kit.
 - **CDN.** Unknown whether `natoof.ae` sits behind Cloudflare. Confirm before Step 7 so we know whether a purge is required.
 - **`.htaccess` edits.** Do not pre-emptively modify; only act if Step 7 surfaces a MIME-type problem.
+- **`font-display: swap`.** All 6 new `@font-face` blocks declare `font-display: swap`. Original Google `earlyaccess` CSS had no `font-display` (i.e. browser default = `block`). Strictly per §0 the conservative choice is to remove `font-display: swap`. Pending your call before Step 5.
 
 ### 🚫 Out of scope (explicitly NOT doing)
 Per §0: no UI changes, no CSS cleanup, no markup edits, no library upgrades, no font substitution, no reformatting. Anything outside the four allowed change categories is rejected.
